@@ -1,12 +1,12 @@
-# Who is on the team. Replace OWNER, SENIOR_GITHUB and JUNIOR_GITHUB before a live run.
+# Who is on the team.
 repo: vivekyarra/dibs-demo-shop
 team_room: payments-team
 agents: {dibs: dibs, builder: builder, reviewer: reviewer}
 seniors:
-  - {handle: ravi, github: SENIOR_GITHUB, chat: [ravi]}
+  - {handle: ravi, github: vivekyarra, chat: [ravi]}
 juniors:
   - handle: asha
-    github: JUNIOR_GITHUB
+    github: asha-dibs-demo
     chat: [asha]
     practice_room: asha-practice
     # 0 Unseen, 1 Exposed, 2 Guided, 3 Independent, 4 Fluent
