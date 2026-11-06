@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import sqlite3
 
-from fastapi import APIRouter, BackgroundTasks, Depends, status
+from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, status
 
 from app.api.deps import get_db, get_settings
 from app.api.ratelimit import track_request
@@ -22,8 +22,17 @@ def create_order(
     background: BackgroundTasks,
     conn: sqlite3.Connection = Depends(get_db),
     settings: Settings = Depends(get_settings),
+    idempotency_key: str | None = Header(default=None, alias="Idempotency-Key"),
 ) -> dict:
-    order = service.create_order(conn, body, webhook_url=settings.webhook_url)
+    try:
+        order = service.create_order(
+            conn, body, webhook_url=settings.webhook_url, idempotency_key=idempotency_key
+        )
+    except service.IdempotencyConflict as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Idempotency-Key was already used with a different request body",
+        ) from exc
     if settings.webhook_url:
         background.add_task(drain_outbox, settings)
     return service.to_public(order)
