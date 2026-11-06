@@ -5,7 +5,7 @@ from app.db import connect, run_migrations
 
 def test_migrations_apply_once(tmp_path):
     conn = connect(str(tmp_path / "m.sqlite3"))
-    assert run_migrations(conn) == ["0001_init"]
+    assert run_migrations(conn) == ["0001_init", "0002_idempotency_keys"]
     assert run_migrations(conn) == []
     tables = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type = 'table'")}
     assert {"orders", "order_items", "webhook_deliveries", "schema_migrations"} <= tables
